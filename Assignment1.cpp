@@ -7,7 +7,7 @@ using namespace std;
 
 int** transpose(int **x);
 
-int** add();
+int** add(int **x);
 
 int** multiply();
 
@@ -27,31 +27,63 @@ int main()
 
     //run the method
     switch (method) {
-    case 1:
-        int** result = transpose(x);
-        cout << "Z1 = ";
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 5; j++) {
-                cout << result[i][j] << " ";
+        case 1: {
+            int** z1 = transpose(x);
+            cout << "Z1 = ";
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 5; j++) {
+                    if (z1[i][j] != 0) {
+                        cout << i << " " << j << " " << z1[i][j] << " ";
+                    }
+                }
             }
+            break;
         }
-        break;
-    case 2:
-        int** result = add();
-        break;
-    case 3:
-        int** result = multiply();
-        break;
+        case 2: {
+            int** z2 = add(x);
+            cout << "Z2 = ";
+            for (int i = 0; i < 5; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (z2[i][j] != 0) {
+
+                        cout << i << " " << j << " " << z2[i][j] << " ";
+                    }
+                }
+            }
+            break;
+        }
+        case 3: {
+            int** result = multiply();
+            break;
+        }
     }
 
     return 0;
 }
 
 int** transpose(int **x) {
+    
+    //initialize result matrix to zero
+    int** z1 = new int*[8];
+    for (int idx = 0; idx < 8; idx++) {
+        z1[idx] = new int[5];
+    }
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 5; j++) {
+            z1[i][j] = 0;
+        }
+    }
 
+    //loop through given array
+    for (int i = 0; i < 10; i++) {
+        //place the value into the corresponding location
+        z1[x[i][1]][x[i][0]] = x[i][2];
+    }
+
+    return z1;
 }
 
-int** add() {
+int** add(int **x) {
 
     //initialize y matrix
     int y[10][3] = {
@@ -66,6 +98,28 @@ int** add() {
         {4, 0, 1},
         {4, 4, 7}
     };
+
+    //initialize result matrix
+    int** z2  = new int* [5];
+    for (int idx = 0; idx < 5; idx++) {
+        z2[idx] = new int[8];
+    }
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 8; j++) {
+            z2[i][j] = 0;
+        }
+    }
+
+    //insert vals
+    for (int idx = 0; idx < 10; idx++) {
+        //set from x matrix
+        z2[x[idx][0]][x[idx][1]] = x[idx][2];
+
+        //add from y matrix
+        z2[y[idx][0]][y[idx][1]] += y[idx][2];
+    }
+
+    return z2;
 
 }
 
@@ -85,6 +139,8 @@ int** multiply() {
         {4, 4, 7}
     };
 
+    int** z3 = new int* [5];
+    return z3;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
