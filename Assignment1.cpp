@@ -9,7 +9,7 @@ int** transpose(int **x);
 
 int** add(int **x);
 
-int** multiply();
+int** multiply(int **xT);
 
 int main()
 {
@@ -53,7 +53,16 @@ int main()
             break;
         }
         case 3: {
-            int** result = multiply();
+            int** xT = transpose(x);
+            int** z3 = multiply(xT);
+            cout << "Z3 = ";
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (z3[i][j] != 0) {
+                        cout << i << " " << j << " " << z3[i][j] << " ";
+                    }
+                }
+            }
             break;
         }
     }
@@ -123,33 +132,37 @@ int** add(int **x) {
 
 }
 
-int** multiply() {
+int** multiply(int **xT) {
 
     //initialize y matrix
-    int y[10][3] = {
-        {0, 0, 1},
-        {0, 3, 9},
-        {0, 5, 5},
-        {1, 4, 2},
-        {1, 7, 3},
-        {2, 1, 4},
-        {2, 6, 8},
-        {3, 2, 2},
-        {4, 0, 1},
-        {4, 4, 7}
+    int y[5][8] = {
+        {1, 0, 0, 9, 0, 5, 0, 0},
+        {0, 0, 0, 0, 2, 0, 0, 3},
+        {0, 4, 0, 0, 0, 0, 8, 0},
+        {0, 0, 2, 0, 0, 0, 0, 0},
+        {1, 0, 0, 0, 7, 0, 0, 0}
     };
 
-    int** z3 = new int* [5];
+    //initialize z3 matrix
+    int** z3 = new int*[8];
+    for (int idx = 0; idx < 8; idx++) {
+        z3[idx] = new int[8];
+    }
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            z3[i][j] = 0;
+        }
+    }
+
+    //multiply matrices
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            int dotProduct = 0;
+            for (int k = 0; k < 5; k++) {
+                z3[i][j] += xT[i][k] * y[k][j];
+            }
+        }
+    }
+
     return z3;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
