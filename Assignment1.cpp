@@ -5,9 +5,9 @@
 
 using namespace std;
 
-int** transpose(int **x);
+int** transpose(int **x, int r);
 
-int** add(int **x);
+int** add(int **x, int r);
 
 int** multiply(int **xT);
 
@@ -17,9 +17,13 @@ int main()
     int method;
     cin >> method;
 
+    //get num elements
+    int elements;
+    cin >> elements;
+
     //get x matrix
-    int** x = new int*[10];
-    for (int i = 0; i < 10; i++) {
+    int** x = new int*[elements];
+    for (int i = 0; i < elements; i++) {
         x[i] = new int[3];
         cin >> x[i][0] >> x[i][1] >> x[i][2];
     }
@@ -28,7 +32,7 @@ int main()
     //run the method
     switch (method) {
         case 1: {
-            int** z1 = transpose(x);
+            int** z1 = transpose(x, elements);
             cout << "Z1 = ";
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 5; j++) {
@@ -40,7 +44,7 @@ int main()
             break;
         }
         case 2: {
-            int** z2 = add(x);
+            int** z2 = add(x, elements);
             cout << "Z2 = ";
             for (int i = 0; i < 5; i++) {
                 for (int j = 0; j < 8; j++) {
@@ -53,7 +57,7 @@ int main()
             break;
         }
         case 3: {
-            int** xT = transpose(x);
+            int** xT = transpose(x, elements);
             int** z3 = multiply(xT);
             cout << "Z3 = ";
             for (int i = 0; i < 8; i++) {
@@ -70,7 +74,7 @@ int main()
     return 0;
 }
 
-int** transpose(int **x) {
+int** transpose(int **x, int r) {
     
     //initialize result matrix to zero
     int** z1 = new int*[8];
@@ -84,7 +88,7 @@ int** transpose(int **x) {
     }
 
     //loop through given array
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < r; i++) {
         //place the value into the corresponding location
         z1[x[i][1]][x[i][0]] = x[i][2];
     }
@@ -92,7 +96,7 @@ int** transpose(int **x) {
     return z1;
 }
 
-int** add(int **x) {
+int** add(int **x, int r) {
 
     //initialize y matrix
     int y[10][3] = {
@@ -120,7 +124,7 @@ int** add(int **x) {
     }
 
     //insert vals
-    for (int idx = 0; idx < 10; idx++) {
+    for (int idx = 0; idx < r; idx++) {
         //set from x matrix
         z2[x[idx][0]][x[idx][1]] = x[idx][2];
 
