@@ -1,5 +1,4 @@
 // Assignment1.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
 
 #include <iostream>
 
@@ -11,62 +10,109 @@ int** add(int **x, int r);
 
 int** multiply(int **xT);
 
+class SparseMatrix {
+
+    //max possible elements
+    const static int MAX = 100;
+
+private:
+    int** data;
+    int row;
+    int col;
+
+    //num elems
+    int len;
+
+public:
+    //convert normal matrix to sparse matrix
+    SparseMatrix(int** z, int row, int col) {
+        this->row = row;
+        this->col = col;
+        this->len = 0;
+
+        //initialize matrix
+        data = new int*[MAX];
+        for (int idx = 0; idx < MAX; idx++) {
+            data[idx] = new int[3]{ };
+        }
+
+        //add values from regular matrix
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (z[i][j] != 0) {
+                    data[len][0] = i;
+                    data[len][1] = j;
+                    data[len][2] = z[i][j];
+                    len++;
+                }
+            }
+        }
+    }
+
+    void print() {
+        for (int i = 0; i < len-1; i++) {
+            cout << data[i][0] << " " << data[i][1] << " " << data[i][2] << " ";
+        }
+        cout << data[len-1][0] << " " << data[len-1][1] << " " << data[len-1][2];
+    }
+
+    int** getData() {
+        return data;
+    }
+
+    int getLength() {
+        return len;
+    }
+};
+
 int main()
 {
-    //get method to run
-    int method;
-    cin >> method;
+    //get method to run n
+    int n;
+    cin >> n;
 
-    //get num elements
-    int elements;
-    cin >> elements;
+    //get num elements r
+    int r;
+    cin >> r;
 
     //get x matrix
-    int** x = new int*[elements];
-    for (int i = 0; i < elements; i++) {
+    int** x = new int*[r];
+    for (int i = 0; i < r; i++) {
         x[i] = new int[3];
         cin >> x[i][0] >> x[i][1] >> x[i][2];
     }
 
 
     //run the method
-    switch (method) {
+    switch (n) {
         case 1: {
-            int** z1 = transpose(x, elements);
+            int** z1 = transpose(x, r);
+
             cout << "Z1 = ";
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 5; j++) {
-                    if (z1[i][j] != 0) {
-                        cout << i << " " << j << " " << z1[i][j] << " ";
-                    }
-                }
-            }
+            SparseMatrix output(z1, 8, 5);
+            output.print();
+            
             break;
         }
         case 2: {
-            int** z2 = add(x, elements);
+            int** z2 = add(x, r);
             cout << "Z2 = ";
-            for (int i = 0; i < 5; i++) {
-                for (int j = 0; j < 8; j++) {
-                    if (z2[i][j] != 0) {
+            SparseMatrix output(z2, 5, 8);
+            output.print();
 
-                        cout << i << " " << j << " " << z2[i][j] << " ";
-                    }
-                }
-            }
             break;
         }
         case 3: {
-            int** xT = transpose(x, elements);
+            int** xT = transpose(x, r);
             int** z3 = multiply(xT);
             cout << "Z3 = ";
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    if (z3[i][j] != 0) {
-                        cout << i << " " << j << " " << z3[i][j] << " ";
-                    }
-                }
-            }
+            SparseMatrix output(z3, 8, 8);
+            output.print();
+
+            break;
+        }
+        default: {
+            cout << "invalid test case" << endl;
             break;
         }
     }
@@ -79,12 +125,7 @@ int** transpose(int **x, int r) {
     //initialize result matrix to zero
     int** z1 = new int*[8];
     for (int idx = 0; idx < 8; idx++) {
-        z1[idx] = new int[5];
-    }
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 5; j++) {
-            z1[i][j] = 0;
-        }
+        z1[idx] = new int[5]{ };
     }
 
     //loop through given array
@@ -115,21 +156,17 @@ int** add(int **x, int r) {
     //initialize result matrix
     int** z2  = new int* [5];
     for (int idx = 0; idx < 5; idx++) {
-        z2[idx] = new int[8];
-    }
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 8; j++) {
-            z2[i][j] = 0;
-        }
+        z2[idx] = new int[8]{ };
     }
 
-    //insert vals
-    for (int idx = 0; idx < r; idx++) {
-        //set from x matrix
-        z2[x[idx][0]][x[idx][1]] = x[idx][2];
+    //add from x matrix
+    for (int i = 0; i < r; i++) {
+        z2[x[i][0]][x[i][1]] += x[i][2];
+    }
 
-        //add from y matrix
-        z2[y[idx][0]][y[idx][1]] += y[idx][2];
+    //add from y matrix
+    for (int i = 0; i < 10; i++) {
+        z2[y[i][0]][y[i][1]] += y[i][2];
     }
 
     return z2;
@@ -150,18 +187,13 @@ int** multiply(int **xT) {
     //initialize z3 matrix
     int** z3 = new int*[8];
     for (int idx = 0; idx < 8; idx++) {
-        z3[idx] = new int[8];
-    }
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            z3[i][j] = 0;
-        }
+        z3[idx] = new int[8]{ };
     }
 
     //multiply matrices
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
-            int dotProduct = 0;
+            //take dot product
             for (int k = 0; k < 5; k++) {
                 z3[i][j] += xT[i][k] * y[k][j];
             }
@@ -170,3 +202,4 @@ int** multiply(int **xT) {
 
     return z3;
 }
+
